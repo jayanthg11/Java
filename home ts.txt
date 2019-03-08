@@ -1,0 +1,51 @@
+import { Component, OnInit } from '@angular/core';
+import {BikeService} from '../../service/bike.service'
+import {FormGroup,FormControl,Validators} from '@angular/forms'
+import{Observable} from 'rxjs/Observable'
+import { error } from '../../../../node_modules/@angular/compiler/src/util';
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
+})
+export class HomeComponent implements OnInit {
+ 
+  bikeform: FormGroup;
+  validMessage:string="";
+
+  constructor(private bikeService:BikeService) { }
+
+  ngOnInit() {
+    this.bikeform=new FormGroup({
+      name:new FormControl('',Validators.required),
+      email:new FormControl('',Validators.required),
+      phone:new FormControl('',Validators.required),
+     
+      password:new FormControl('',Validators.required),
+     
+
+    });
+  }
+
+  submitRegistration() {
+    if(this.bikeform.valid){
+      this.validMessage="Your form has been registered";
+      this.bikeService.createbikeRegistration(this.bikeform.value).subscribe(
+        data=>{
+          this.bikeform.reset();
+          return true;
+        },
+        error =>{
+          return Observable.throw(error);
+        }
+      )
+      
+    }
+    else{
+      this.validMessage="Pls fill out form befre submotting";
+    }
+
+
+  }
+
+}
